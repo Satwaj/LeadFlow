@@ -6,7 +6,7 @@ export const login = asyncHandler(async (req, res) => {
   const { token, user } = await loginUser(req.body);
 
   res.cookie("token", token, getCookieOptions());
-  res.status(200).json(new ApiResponse("Login successful", { user }));
+  res.status(200).json(new ApiResponse("Login successful", { token, user }));
 });
 
 export const logout = asyncHandler(async (_req, res) => {

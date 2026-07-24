@@ -5,7 +5,11 @@ import { getApiError } from "../../utils/getApiError.js";
 export const login = createAsyncThunk("auth/login", async (payload, { rejectWithValue }) => {
   try {
     const response = await authApi.login(payload);
-    return response.data.data.user;
+    const { token, user } = response.data.data;
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+    return user;
   } catch (error) {
     return rejectWithValue(getApiError(error, "Invalid email or password."));
   }
@@ -23,8 +27,10 @@ export const restoreSession = createAsyncThunk("auth/restoreSession", async (_, 
 export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
   try {
     await authApi.logout();
+    localStorage.removeItem("token");
     return true;
   } catch (error) {
+    localStorage.removeItem("token");
     return rejectWithValue(getApiError(error, "Logout failed."));
   }
 });

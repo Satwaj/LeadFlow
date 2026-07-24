@@ -23,7 +23,6 @@ const originsList = Array.from(new Set([...allowedOrigins, ...defaultOrigins]));
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like Postman, mobile apps, server-to-server)
       if (!origin) return callback(null, true);
 
       const normalizedOrigin = origin.replace(/\/$/, "");
@@ -36,7 +35,6 @@ app.use(
         return callback(null, true);
       }
 
-      // Fallback: allow request origin
       return callback(null, true);
     },
     credentials: true,
@@ -52,7 +50,12 @@ app.get("/health", (_req, res) => {
   res.status(200).json({ success: true, message: "LeadFlow backend is healthy" });
 });
 
+// Primary API route mounting
 app.use("/api", routes);
+
+// Route alias at root level to handle requests sent to /auth/*, /leads/*, /lead-requests/* without /api prefix
+app.use("/", routes);
+
 app.use(notFound);
 app.use(errorHandler);
 
