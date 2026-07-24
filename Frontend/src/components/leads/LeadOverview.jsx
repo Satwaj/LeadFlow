@@ -1,4 +1,4 @@
-import { Building2, CalendarDays, Mail, Phone, Send } from "lucide-react";
+import { Building2, CalendarDays, Mail, Phone, Send, UserCheck } from "lucide-react";
 import { formatDateTime } from "../../utils/formatDate.js";
 
 const itemClass = "flex gap-3 rounded-[var(--radius-md)] bg-[var(--surface-muted)] p-3";
@@ -26,6 +26,15 @@ const LeadOverview = ({ lead }) => (
         <div>
           <p className="text-xs font-semibold uppercase text-[var(--text-muted)]">Company</p>
           <p className="text-sm">{lead.company || "—"}</p>
+        </div>
+      </div>
+      <div className={itemClass}>
+        <UserCheck className="mt-0.5 h-4 w-4 text-[var(--brand)]" aria-hidden="true" />
+        <div>
+          <p className="text-xs font-semibold uppercase text-[var(--text-muted)]">Assigned To</p>
+          <p className="text-sm font-bold text-[var(--text-primary)]">
+            {lead.assignedTo?.name ? lead.assignedTo.name : "Unassigned"}
+          </p>
         </div>
       </div>
       <div className={itemClass}>

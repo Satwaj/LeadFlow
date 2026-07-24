@@ -352,8 +352,18 @@ const PublicLeadFormPage = () => {
                     pattern: { value: /\S+@\S+\.\S+/, message: "Enter a valid email" },
                   })}
                 />
-                <Input label="Phone" placeholder="+91 9999999999" {...register("phone")} />
-                <Input label="Company" placeholder="Acme Corp" {...register("company")} />
+                <Input
+                  label="Phone *"
+                  placeholder="+91 9999999999"
+                  error={errors.phone?.message}
+                  {...register("phone", { required: "Phone number is required" })}
+                />
+                <Input
+                  label="Company *"
+                  placeholder="Acme Corp"
+                  error={errors.company?.message}
+                  {...register("company", { required: "Company name is required" })}
+                />
 
                 <Select
                   label="Service *"
@@ -367,7 +377,11 @@ const PublicLeadFormPage = () => {
                   ))}
                 </Select>
 
-                <Select label="Source" {...register("source")}>
+                <Select
+                  label="Source *"
+                  error={errors.source?.message}
+                  {...register("source", { required: "Lead source is required" })}
+                >
                   {PUBLIC_SOURCES.map((source) => (
                     <option key={source} value={source}>
                       {source}
@@ -377,9 +391,10 @@ const PublicLeadFormPage = () => {
 
                 <div className="sm:col-span-2">
                   <Textarea
-                    label="Project Overview"
+                    label="Project Message *"
                     placeholder="Tell us briefly about your goals, timelines, or requirements..."
-                    {...register("message")}
+                    error={errors.message?.message}
+                    {...register("message", { required: "Project message details are required" })}
                   />
                 </div>
 

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Activity from "../models/activity.model.js";
 import Lead from "../models/lead.model.js";
 import LeadRequest from "../models/leadRequest.model.js";
+import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 
 const ACTIVE_STATUSES = ["New", "Contacted", "Qualified", "Proposal"];
@@ -115,12 +116,23 @@ export const approveLeadRequest = async (requestId, adminUser) => {
     { $set: { status: "rejected", reviewedBy: adminUser.id, reviewedAt: new Date() } }
   );
 
-  // 4. Create Activity record
+  // 4. Fetch user details for clean activity logging
+  const requestingMember = await User.findById(request.requestedBy);
+  const assigneeName = requestingMember ? requestingMember.name : "Member";
+  const performedByName = adminUser?.name || "Admin";
+
+  // 5. Create Activity record
   await Activity.create({
     lead: lead._id,
     action: "lead_assigned",
     performedBy: adminUser.id,
-    meta: { from: previousAssignedTo, to: request.requestedBy.toString(), approvedRequestId: request._id.toString() },
+    meta: {
+      from: previousAssignedTo,
+      to: request.requestedBy.toString(),
+      assigneeName,
+      performedByName,
+      approvedRequestId: request._id.toString(),
+    },
   });
 
   return populateRequest(LeadRequest.findById(request._id));
@@ -146,11 +158,20 @@ export const rejectLeadRequest = async (requestId, adminUser) => {
   request.reviewedAt = new Date();
   await request.save();
 
+  const requestingMember = await User.findById(request.requestedBy);
+  const assigneeName = requestingMember ? requestingMember.name : "Member";
+  const performedByName = adminUser?.name || "Admin";
+
   await Activity.create({
     lead: request.lead,
     action: "lead_request_rejected",
     performedBy: adminUser.id,
-    meta: { rejectedRequestId: request._id.toString(), requestedBy: request.requestedBy.toString() },
+    meta: {
+      rejectedRequestId: request._id.toString(),
+      requestedBy: request.requestedBy.toString(),
+      assigneeName,
+      performedByName,
+    },
   });
 
   return populateRequest(LeadRequest.findById(request._id));

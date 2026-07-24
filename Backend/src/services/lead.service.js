@@ -142,7 +142,12 @@ export const assignLead = async (leadId, assignedTo, user) => {
     lead: lead._id,
     action: "lead_assigned",
     performedBy: actorId(user),
-    meta: { from: previousAssignedTo, to: assignedTo },
+    meta: {
+      from: previousAssignedTo,
+      to: assignedTo,
+      assigneeName: assignee.name,
+      performedByName: user?.name || "Admin",
+    },
   });
 
   return populateLead(Lead.findById(lead._id));

@@ -6,25 +6,19 @@ const objectId = z.string().refine((value) => mongoose.Types.ObjectId.isValid(va
   message: "Invalid ID",
 });
 
-const optionalTrimmed = z
-  .string()
-  .trim()
-  .optional()
-  .transform((value) => (value === "" ? undefined : value));
-
 export const leadIdParamSchema = z.object({
   params: z.object({ id: objectId }),
 });
 
 export const createLeadSchema = z.object({
   body: z.object({
-    name: z.string().trim().min(1, "Name is required"),
-    email: z.email().trim().toLowerCase(),
-    phone: optionalTrimmed,
-    company: optionalTrimmed,
-    service: z.string().trim().min(1, "Service is required"),
-    source: z.string().trim().min(1).default("website"),
-    message: optionalTrimmed,
+    name: z.string().trim().min(1, "Full Name is required"),
+    email: z.string().trim().toLowerCase().email("Valid email address is required"),
+    phone: z.string().trim().min(1, "Phone number is required"),
+    company: z.string().trim().min(1, "Company / Organization name is required"),
+    service: z.string().trim().min(1, "Service requested is required"),
+    source: z.string().trim().min(1, "Lead source is required").default("website"),
+    message: z.string().trim().min(1, "Project message details are required"),
   }),
 });
 

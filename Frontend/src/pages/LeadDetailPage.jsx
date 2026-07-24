@@ -249,11 +249,18 @@ const LeadDetailPage = () => {
                     ) : memberReq?.status === "rejected" ? (
                       <div className="space-y-2">
                         <div className="inline-flex items-center gap-2 rounded-full bg-[var(--danger-soft)] px-4 py-2 text-xs font-bold text-[var(--danger)] border border-[var(--danger)]/30">
-                          <XCircle className="h-4 w-4" /> Request Rejected by Admin
+                          <XCircle className="h-4 w-4" /> Previous Request Rejected by Admin
                         </div>
                         <p className="text-xs text-[var(--text-muted)]">
-                          Admin reviewed your request and kept the lead available.
+                          Admin reviewed your previous request and kept the lead available. You can resubmit your request below.
                         </p>
+                        <Button
+                          className="w-full justify-center gap-2 bg-[var(--brand)] hover:bg-[var(--brand-hover)] text-xs font-bold mt-2"
+                          loading={requesting}
+                          onClick={handleRequestLead}
+                        >
+                          <Send className="h-3.5 w-3.5" /> Request Lead Again
+                        </Button>
                       </div>
                     ) : memberReq?.status === "approved" ? (
                       <div className="inline-flex items-center gap-2 rounded-full bg-[var(--success-soft)] px-4 py-2 text-xs font-bold text-[var(--success)] border border-[var(--success)]/30">

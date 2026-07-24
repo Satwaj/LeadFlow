@@ -7,12 +7,23 @@ const actionTitle = {
   lead_created: "Lead created",
   status_changed: "Status changed",
   lead_assigned: "Lead assigned",
+  lead_request_rejected: "Request rejected",
   note_added: "Note added",
 };
 
 const describe = (activity) => {
-  if (activity.action === "status_changed") return `${activity.meta?.from || "—"} → ${activity.meta?.to || "—"}`;
-  if (activity.action === "lead_assigned") return `Assigned to ${activity.meta?.to || "user"}`;
+  if (activity.action === "status_changed") {
+    return `${activity.meta?.from || "—"} → ${activity.meta?.to || "—"}`;
+  }
+  if (activity.action === "lead_assigned") {
+    const assignee = activity.meta?.assigneeName || (activity.meta?.to?.length > 20 ? "Member" : activity.meta?.to) || "Member";
+    const performer = activity.performedBy?.name || activity.meta?.performedByName || "Admin";
+    return `Assigned to ${assignee} by ${performer}`;
+  }
+  if (activity.action === "lead_request_rejected") {
+    const performer = activity.performedBy?.name || activity.meta?.performedByName || "Admin";
+    return `Lead request rejected by ${performer}`;
+  }
   if (activity.action === "note_added") return "Internal note added";
   return "Public enquiry received";
 };
