@@ -9,7 +9,7 @@ const navItems = [
 ];
 
 const Sidebar = ({ user, onLogout, loggingOut = false }) => (
-  <aside className="hidden lg:flex lg:flex-col sticky top-0 h-screen w-60 shrink-0 border-r border-white/10 bg-[var(--surface-dark)] p-4 text-[var(--text-inverse)] z-30 overflow-y-auto">
+  <aside className="hidden lg:flex lg:flex-col sticky top-0 h-screen w-60 shrink-0 border-r border-white/10 bg-[var(--surface-dark)] p-4 text-[var(--text-inverse)] z-30 overflow-y-auto no-scrollbar">
     <div className="mb-8">
       <div className="inline-flex rounded-full border border-white/15 px-3 py-1 text-xs font-semibold text-white/80">
         LeadFlow
