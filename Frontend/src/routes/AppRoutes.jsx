@@ -18,6 +18,13 @@ const AppRoutes = () => (
       <Route path="/" element={<PublicLeadFormPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      
+      {/* Top-level aliases for direct navigation */}
+      <Route path="/dashboard" element={<Navigate to="/app/dashboard" replace />} />
+      <Route path="/profile" element={<Navigate to="/app/profile" replace />} />
+      <Route path="/leads" element={<Navigate to="/app/leads" replace />} />
+      <Route path="/lead-requests" element={<Navigate to="/app/lead-requests" replace />} />
+
       <Route element={<ProtectedRoute />}>
         <Route path="/app" element={<DashboardLayout />}>
           <Route index element={<Navigate to="/app/dashboard" replace />} />
