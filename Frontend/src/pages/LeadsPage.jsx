@@ -9,22 +9,25 @@ import LeadMobileList from "../components/leads/LeadMobileList.jsx";
 import LeadTable from "../components/leads/LeadTable.jsx";
 import { fetchUsers } from "../redux/slices/authSlice.js";
 import { fetchLeads, setFilters } from "../redux/slices/leadSlice.js";
+import { fetchLeadRequests, fetchMyLeadRequests } from "../redux/slices/leadRequestSlice.js";
 
 const LeadsPage = () => {
   const dispatch = useDispatch();
   const { user, users } = useSelector((state) => state.auth);
   const { items, pagination, filters, status, error } = useSelector((state) => state.leads);
+  const leadRequests = useSelector((state) => state.leadRequests);
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const isAdmin = user?.role === "admin";
 
   const params = useMemo(
     () => ({
       page,
-      limit: 10,
+      limit,
       ...(filters.status ? { status: filters.status } : {}),
       ...(isAdmin && filters.assignedTo ? { assignedTo: filters.assignedTo } : {}),
     }),
-    [filters.assignedTo, filters.status, isAdmin, page]
+    [filters.assignedTo, filters.status, isAdmin, limit, page]
   );
 
   useEffect(() => {
@@ -32,7 +35,12 @@ const LeadsPage = () => {
   }, [dispatch, params]);
 
   useEffect(() => {
-    if (isAdmin) dispatch(fetchUsers());
+    if (isAdmin) {
+      dispatch(fetchUsers());
+      dispatch(fetchLeadRequests());
+    } else {
+      dispatch(fetchMyLeadRequests());
+    }
   }, [dispatch, isAdmin]);
 
   const handleFilterChange = (nextFilters) => {
@@ -44,6 +52,8 @@ const LeadsPage = () => {
     setPage(1);
     dispatch(setFilters({ status: "", assignedTo: "" }));
   };
+
+  const currentRequests = isAdmin ? leadRequests.items : leadRequests.myRequests;
 
   return (
     <section className="animate-in space-y-6">
@@ -76,12 +86,19 @@ const LeadsPage = () => {
       ) : null}
 
       {status !== "loading" && status !== "failed" && items.length > 0 ? (
-        <div className="panel overflow-hidden bg-white border border-[var(--border-default)] shadow-md">
-          <LeadTable leads={items} />
+        <div className="panel overflow-hidden bg-white border border-[var(--border-default)] shadow-md rounded-[var(--radius-xl)]">
+          <LeadTable leads={items} requests={currentRequests} userRole={user?.role} />
           <div className="p-3 md:hidden">
             <LeadMobileList leads={items} />
           </div>
-          <Pagination pagination={pagination} onPageChange={setPage} />
+          <Pagination
+            pagination={pagination}
+            onPageChange={setPage}
+            onLimitChange={(newLimit) => {
+              setLimit(newLimit);
+              setPage(1);
+            }}
+          />
         </div>
       ) : null}
     </section>

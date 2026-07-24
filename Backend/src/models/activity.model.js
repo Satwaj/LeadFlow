@@ -5,7 +5,7 @@ const activitySchema = new mongoose.Schema(
     lead: { type: mongoose.Schema.Types.ObjectId, ref: "Lead", required: true },
     action: {
       type: String,
-      enum: ["lead_created", "status_changed", "lead_assigned", "note_added"],
+      enum: ["lead_created", "status_changed", "lead_assigned", "note_added", "lead_request_rejected"],
       required: true,
     },
     performedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },

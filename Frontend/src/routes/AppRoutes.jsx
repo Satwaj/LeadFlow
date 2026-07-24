@@ -1,11 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout.jsx";
+import AdminCreateUserPage from "../pages/AdminCreateUserPage.jsx";
+import AdminLeadRequestsPage from "../pages/AdminLeadRequestsPage.jsx";
 import DashboardPage from "../pages/DashboardPage.jsx";
 import LeadDetailPage from "../pages/LeadDetailPage.jsx";
 import LeadsPage from "../pages/LeadsPage.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
 import NotFoundPage from "../pages/NotFoundPage.jsx";
-import AdminCreateUserPage from "../pages/AdminCreateUserPage.jsx";
 import ProfilePage from "../pages/ProfilePage.jsx";
 import PublicLeadFormPage from "../pages/PublicLeadFormPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
@@ -23,6 +24,7 @@ const AppRoutes = () => (
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="leads" element={<LeadsPage />} />
           <Route path="leads/:id" element={<LeadDetailPage />} />
+          <Route path="lead-requests" element={<AdminLeadRequestsPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="create-user" element={<AdminCreateUserPage />} />
         </Route>

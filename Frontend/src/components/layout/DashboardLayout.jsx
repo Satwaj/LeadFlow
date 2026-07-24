@@ -9,6 +9,7 @@ import Sidebar from "./Sidebar.jsx";
 
 const titleFromPath = (pathname) => {
   if (pathname.includes("/create-user")) return "Create User";
+  if (pathname.includes("/lead-requests")) return "Lead Requests";
   if (pathname.includes("/profile")) return "User Profile";
   if (pathname.includes("/leads/")) return "Lead Details";
   if (pathname.includes("/leads")) return "Leads";

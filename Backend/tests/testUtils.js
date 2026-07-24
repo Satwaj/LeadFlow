@@ -4,6 +4,7 @@ import app from "../src/app.js";
 import { env } from "../src/config/env.js";
 import Activity from "../src/models/activity.model.js";
 import Lead from "../src/models/lead.model.js";
+import LeadRequest from "../src/models/leadRequest.model.js";
 import User from "../src/models/user.model.js";
 
 export const connectTestDB = async () => {
@@ -17,7 +18,7 @@ export const connectTestDB = async () => {
 };
 
 export const clearTestDB = async () => {
-  await Promise.all([Activity.deleteMany({}), Lead.deleteMany({}), User.deleteMany({})]);
+  await Promise.all([Activity.deleteMany({}), Lead.deleteMany({}), LeadRequest.deleteMany({}), User.deleteMany({})]);
 };
 
 export const disconnectTestDB = async () => {

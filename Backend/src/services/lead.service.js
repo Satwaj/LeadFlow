@@ -4,6 +4,8 @@ import Lead from "../models/lead.model.js";
 import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 
+const ACTIVE_STATUSES = ["New", "Contacted", "Qualified", "Proposal"];
+
 const actorId = (user) => user?.id || user?._id || null;
 
 const populateLead = (query) =>
@@ -20,12 +22,22 @@ const ensureLeadAccess = async (leadId, user) => {
 
   if (user.role === "member") {
     const assignedTo = lead.assignedTo?.toString();
+    const isAssignedToUser = assignedTo && assignedTo === user.id.toString();
+    const isUnassignedActive = !assignedTo && ACTIVE_STATUSES.includes(lead.status);
 
-    if (!assignedTo || assignedTo !== user.id.toString()) {
+    if (!isAssignedToUser && !isUnassignedActive) {
       throw new ApiError(403, "Forbidden");
     }
   }
 
+  return lead;
+};
+
+const ensureLeadAssignment = async (leadId, user) => {
+  const lead = await ensureLeadAccess(leadId, user);
+  if (user.role === "member" && lead.assignedTo?.toString() !== user.id.toString()) {
+    throw new ApiError(403, "You must be assigned to this lead to perform this action");
+  }
   return lead;
 };
 
@@ -49,7 +61,7 @@ export const createPublicLead = async (payload) => {
   };
 };
 
-export const listLeads = async ({ page, limit, status, assignedTo }, user) => {
+export const listLeads = async ({ page = 1, limit = 10, status, assignedTo, scope }, user) => {
   const filter = {};
 
   if (status) filter.status = status;
@@ -57,7 +69,17 @@ export const listLeads = async ({ page, limit, status, assignedTo }, user) => {
   if (user.role === "admin") {
     if (assignedTo) filter.assignedTo = assignedTo;
   } else {
-    filter.assignedTo = user.id;
+    if (scope === "available") {
+      filter.assignedTo = null;
+      if (!status) filter.status = { $in: ACTIVE_STATUSES };
+    } else if (scope === "assigned") {
+      filter.assignedTo = user.id;
+    } else {
+      filter.$or = [
+        { assignedTo: user.id },
+        { assignedTo: null, status: { $in: ACTIVE_STATUSES } },
+      ];
+    }
   }
 
   const skip = (page - 1) * limit;
@@ -72,7 +94,7 @@ export const listLeads = async ({ page, limit, status, assignedTo }, user) => {
       page,
       limit,
       total,
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(total / limit) || 1,
     },
   };
 };
@@ -83,7 +105,7 @@ export const getLeadById = async (leadId, user) => {
 };
 
 export const updateLeadStatus = async (leadId, status, user) => {
-  const lead = await ensureLeadAccess(leadId, user);
+  const lead = await ensureLeadAssignment(leadId, user);
   const previousStatus = lead.status;
 
   lead.status = status;
@@ -127,7 +149,7 @@ export const assignLead = async (leadId, assignedTo, user) => {
 };
 
 export const addLeadNote = async (leadId, text, user) => {
-  const lead = await ensureLeadAccess(leadId, user);
+  const lead = await ensureLeadAssignment(leadId, user);
 
   lead.notes.push({
     text,

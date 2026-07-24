@@ -1,4 +1,4 @@
-import { BarChart3, Globe, LogOut, User, UserPlus, UsersRound } from "lucide-react";
+import { BarChart3, Clock, Globe, LogOut, User, UserPlus, UsersRound } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import Button from "../common/Button.jsx";
 
@@ -34,17 +34,31 @@ const Sidebar = ({ user, onLogout, loggingOut = false }) => (
       ))}
 
       {user?.role === "admin" && (
-        <NavLink
-          to="/app/create-user"
-          className={({ isActive }) =>
-            `flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-semibold transition duration-200 ${
-              isActive ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/8 hover:text-white"
-            }`
-          }
-        >
-          <UserPlus className="h-4 w-4" aria-hidden="true" />
-          Create User
-        </NavLink>
+        <>
+          <NavLink
+            to="/app/lead-requests"
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-semibold transition duration-200 ${
+                isActive ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/8 hover:text-white"
+              }`
+            }
+          >
+            <Clock className="h-4 w-4 text-[var(--brand-secondary)]" aria-hidden="true" />
+            Lead Requests
+          </NavLink>
+
+          <NavLink
+            to="/app/create-user"
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-semibold transition duration-200 ${
+                isActive ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/8 hover:text-white"
+              }`
+            }
+          >
+            <UserPlus className="h-4 w-4" aria-hidden="true" />
+            Create User
+          </NavLink>
+        </>
       )}
 
       <NavLink

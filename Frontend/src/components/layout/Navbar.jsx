@@ -34,32 +34,26 @@ const Navbar = ({ onScrollToSection }) => {
 
         {/* Floating Pill Capsule Bar matching screenshot */}
         <nav className="hidden items-center rounded-full border border-[#dcd6c8] bg-[#f9f6f0]/95 px-8 py-3 shadow-xs md:flex gap-7 backdrop-blur-md">
-          <Link
-            to="/"
-            className="text-sm font-extrabold text-[#121915] hover:text-[var(--brand)] transition"
-          >
-            Home
-          </Link>
           <button
             type="button"
             onClick={() => handleNavClick("services")}
-            className="inline-flex items-center gap-1 text-sm font-medium text-[#404a43] hover:text-[var(--brand)] transition cursor-pointer"
+            className="text-xs font-bold text-[#121915] hover:text-[var(--brand)] transition cursor-pointer tracking-wide"
           >
-            Services <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            Services
           </button>
           <button
             type="button"
             onClick={() => handleNavClick("how-it-works")}
-            className="inline-flex items-center gap-1 text-sm font-medium text-[#404a43] hover:text-[var(--brand)] transition cursor-pointer"
+            className="text-xs font-bold text-[#121915] hover:text-[var(--brand)] transition cursor-pointer tracking-wide"
           >
-            How It Works <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            How It Works
           </button>
           <button
             type="button"
             onClick={() => handleNavClick("start-project")}
-            className="inline-flex items-center gap-1 text-sm font-medium text-[#404a43] hover:text-[var(--brand)] transition cursor-pointer"
+            className="text-xs font-bold text-[#121915] hover:text-[var(--brand)] transition cursor-pointer tracking-wide"
           >
-            Start a Project <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            Start a Project
           </button>
         </nav>
 
