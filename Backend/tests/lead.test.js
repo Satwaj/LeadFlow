@@ -64,6 +64,30 @@ describe("Lead API", () => {
     expect(response.status).toBe(403);
   });
 
+  test("assigned lead only shows to assigned member and is removed from another member's feed", async () => {
+    const memberA = await createUser({ email: "memberA@example.com", role: "member" });
+    const memberB = await createUser({ email: "memberB@example.com", role: "member" });
+
+    const leadAssignedToA = await createLead({ email: "leada@example.com", assignedTo: memberA._id });
+    const leadUnassigned = await createLead({ email: "unassigned@example.com", assignedTo: null, status: "New" });
+
+    const cookieB = await loginAs(memberB.email);
+    const responseB = await request(app).get("/api/leads").set("Cookie", cookieB);
+
+    expect(responseB.status).toBe(200);
+    const leadIdsB = responseB.body.data.leads.map((l) => l._id.toString());
+    expect(leadIdsB).toContain(leadUnassigned._id.toString());
+    expect(leadIdsB).not.toContain(leadAssignedToA._id.toString());
+
+    const cookieA = await loginAs(memberA.email);
+    const responseA = await request(app).get("/api/leads").set("Cookie", cookieA);
+
+    expect(responseA.status).toBe(200);
+    const leadIdsA = responseA.body.data.leads.map((l) => l._id.toString());
+    expect(leadIdsA).toContain(leadAssignedToA._id.toString());
+    expect(leadIdsA).toContain(leadUnassigned._id.toString());
+  });
+
   test("member cannot update status for another member's lead", async () => {
     const member = await createUser({ email: "member@example.com", role: "member" });
     const otherMember = await createUser({ email: "other@example.com", role: "member" });
