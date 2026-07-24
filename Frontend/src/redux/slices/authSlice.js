@@ -47,7 +47,11 @@ export const fetchUsers = createAsyncThunk("auth/fetchUsers", async (_, { reject
 export const registerPublicMember = createAsyncThunk("auth/registerPublicMember", async (payload, { rejectWithValue }) => {
   try {
     const response = await authApi.registerPublicMember(payload);
-    return response.data.data.user;
+    const { token, user } = response.data.data;
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+    return user;
   } catch (error) {
     return rejectWithValue(getApiError(error, "Registration failed. Please try again."));
   }
@@ -115,8 +119,10 @@ const authSlice = createSlice({
         state.registerStatus = "loading";
         state.registerError = null;
       })
-      .addCase(registerPublicMember.fulfilled, (state) => {
+      .addCase(registerPublicMember.fulfilled, (state, action) => {
         state.registerStatus = "succeeded";
+        state.user = action.payload;
+        state.isAuthenticated = true;
         state.registerError = null;
       })
       .addCase(registerPublicMember.rejected, (state, action) => {

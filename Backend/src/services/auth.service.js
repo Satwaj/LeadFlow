@@ -10,8 +10,8 @@ const signToken = (user) =>
 
 export const getCookieOptions = () => ({
   httpOnly: true,
-  secure: env.nodeEnv === "production",
-  sameSite: env.nodeEnv === "production" ? "none" : "lax",
+  secure: env.nodeEnv === "production" || process.env.RENDER === "true" || process.env.NODE_ENV === "production",
+  sameSite: env.nodeEnv === "production" || process.env.RENDER === "true" || process.env.NODE_ENV === "production" ? "none" : "lax",
 });
 
 export const loginUser = async ({ email, password }) => {
@@ -40,9 +40,11 @@ export const registerUser = async ({ name, email, password }) => {
     throw new ApiError(409, "Email already exists");
   }
 
-  // Public registration ALWAYS creates a member. Server-side hardcoded requirement.
   const user = await User.create({ name, email, password, role: "member" });
-  return user.toSafeObject();
+  return {
+    token: signToken(user),
+    user: user.toSafeObject(),
+  };
 };
 
 export const createUser = async ({ name, email, password, role = "member" }) => {

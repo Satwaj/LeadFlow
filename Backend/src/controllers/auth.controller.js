@@ -19,8 +19,10 @@ export const me = asyncHandler(async (req, res) => {
 });
 
 export const register = asyncHandler(async (req, res) => {
-  const user = await registerUser(req.body);
-  res.status(201).json(new ApiResponse("User registered successfully", { user }));
+  const { token, user } = await registerUser(req.body);
+
+  res.cookie("token", token, getCookieOptions());
+  res.status(201).json(new ApiResponse("User registered successfully", { token, user }));
 });
 
 export const createUser = asyncHandler(async (req, res) => {
