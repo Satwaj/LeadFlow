@@ -1,152 +1,240 @@
-# LeadFlow — Lead & Project Management Platform
+# LeadFlow
 
-> Built for Digital Heroes Training Task · Created by Satwaj
+> Lead Management Platform built for the Digital Heroes Training Task.
 
-LeadFlow is a full-stack Lead Management & Opportunity Tracking Platform built with Node.js, Express, MongoDB, React, Redux Toolkit, and Tailwind CSS. It features public lead enquiry capture, role-based access control (RBAC), an Admin approval workflow for lead requests, assigned lead feed isolation, and activity timeline tracking.
+LeadFlow is a full-stack application for capturing and managing leads. It allows visitors to submit project enquiries, Members to work with available and assigned leads, and Admins to manage the overall lead workflow.
 
----
+## Live Project
 
-## 🚀 Key Features
+- **Frontend:** https://lead-flow-snowy-two.vercel.app/
+- **Backend:** https://leadflow-7wvj.onrender.com
 
-### 1. 📩 Public Conversion & Enquiry Capture
-- **Landing & Conversion Page (`/`)**: High-converting project enquiry form with interactive capability cards and workflow timeline.
-- **Mandatory Field Validation**: Frontend (React Hook Form) and Backend (Zod schema) validation requiring `Name`, `Email`, `Phone`, `Company`, `Service`, `Source`, and `Project Message`.
+## What the Application Does
 
-### 2. 👥 Role-Based Access Control (RBAC)
-- **Admin Role**:
-  - View all leads across the entire pipeline.
-  - Manually assign leads directly to any team member.
-  - Access Admin Lead Request Approval Dashboard (`/app/lead-requests`).
-  - Create and manage member and admin user accounts (`/app/create-user`).
-- **Member Role**:
-  - View active unassigned leads and request them (`[Request Lead]`).
-  - View assigned leads in their personal workspace.
-  - Track request status (`Pending`, `Approved`, `Rejected`).
-  - Update status (`Contacted`, `Qualified`, `Proposal`, `Won`, `Lost`) and add internal notes **only** for assigned leads.
-  - **Feed Isolation**: Assigned leads appear **only** in the assigned Member's feed and are automatically hidden from other Members.
+A visitor can submit a project enquiry without creating an account.
 
-### 3. 🔄 Lead Request & Approval Workflow
+After a lead is created:
+
+```text
+Project Enquiry
+      ↓
+Lead Created
+      ↓
+Member Requests Lead
+      ↓
+Admin Approves / Rejects
+      ↓
+Lead Assigned
+      ↓
+Follow-up, Status, Notes & Activity
 ```
-[Member requests unassigned lead] ➡️ [Status: Pending] ➡️ [Admin reviews request]
-                                                               ├── [Approve] ➡️ Lead assigned to Member
-                                                               └── [Reject]  ➡️ Lead remains available ([Request Again] enabled)
+
+### Admin
+
+Admins can:
+
+- View and manage leads
+- Assign leads to Members
+- Review Member lead requests
+- Approve or reject requests
+- Update lead information where permitted
+- View notes and activity
+- Create Member and Admin accounts
+- View their profile
+
+### Member
+
+Members can:
+
+- View available active leads
+- Request a lead from an Admin
+- See their request status
+- Work with leads assigned to them
+- Update the status of permitted leads
+- Add notes
+- View lead activity
+- View their profile
+
+Members cannot directly assign leads to themselves or use Admin-only functionality.
+
+## Authentication & RBAC
+
+LeadFlow uses JWT authentication and role-based access control.
+
+There are two roles:
+
+- `Admin`
+- `Member`
+
+The frontend shows functionality according to the logged-in user's role, while the backend middleware performs the actual authorization checks.
+
+## Backend Architecture
+
+The backend follows:
+
+```text
+Route → Controller → Service → Model
 ```
-- Real-time request status indicators on lead details and leads table.
-- Automatic rejection of conflicting requests when a lead is approved for a member.
-- Descriptive activity timeline logging (e.g. `Assigned to satwaj by ankur`).
 
-### 4. 🔒 Authentication & Cross-Domain Security
-- JWT authentication with dual cookie support (`httpOnly`, `sameSite: "none"`, `secure`) and `Authorization: Bearer <token>` header fallback.
-- Global session restoration on app startup (`App.jsx`), preserving session across page refreshes on `/`, `/login`, or `/app/dashboard`.
-- Vercel SPA routing fallback (`Frontend/vercel.json`) to prevent 404 errors on page refresh.
+- **Routes** define API endpoints and middleware.
+- **Controllers** handle requests and responses.
+- **Services** contain business logic.
+- **Models** handle MongoDB data.
 
----
+Validation is handled with Zod, and authentication/RBAC is handled through middleware.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-### Frontend (`/Frontend`)
-- **Core**: React 19, Vite, JavaScript (ES6+)
-- **State Management**: Redux Toolkit (`@reduxjs/toolkit`)
-- **Routing**: React Router 7 (`react-router-dom`)
-- **Form & Validation**: React Hook Form
-- **Styling & UI**: Tailwind CSS v4, Framer Motion, Lucide React Icons
+### Frontend
 
-### Backend (`/Backend`)
-- **Runtime**: Node.js, Express.js (ES Modules)
-- **Database**: MongoDB with Mongoose ODM
-- **Validation**: Zod schema validation
-- **Authentication**: JSON Web Token (`jsonwebtoken`), `cookie-parser`, `bcryptjs`
-- **Testing**: Jest & Supertest (24/24 tests passing)
+- React + Vite
+- Redux Toolkit
+- React Router
+- Axios
+- React Hook Form
+- Tailwind CSS
+- Framer Motion
+- Lucide React
 
----
+### Backend
 
-## 📁 Project Structure
+- Node.js
+- Express.js
+- MongoDB + Mongoose
+- Zod
+- JWT
+- bcryptjs
+- Jest + Supertest
+
+### Deployment
+
+- Frontend: Vercel
+- Backend: Render
+- Database: MongoDB
+
+## Project Structure
 
 ```text
 LeadFlow/
 ├── Backend/
 │   ├── src/
-│   │   ├── config/          # Environment configuration
-│   │   ├── controllers/     # Auth, Lead, and LeadRequest controllers
-│   │   ├── middlewares/     # Auth, RBAC, error handling, Zod validation
-│   │   ├── models/          # User, Lead, LeadRequest, Activity Mongoose models
-│   │   ├── routes/          # Express route definitions
-│   │   ├── services/        # Service layer logic
-│   │   └── validators/      # Zod validation schemas
-│   └── tests/               # Jest integration test suite
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   └── validators/
+│   └── tests/
 │
 └── Frontend/
     ├── src/
-    │   ├── api/             # Axios instance & API client modules
-    │   ├── components/      # Layout, Auth, Lead, and Common UI components
-    │   ├── pages/           # Landing, Auth, Dashboard, Lead, Profile pages
-    │   ├── redux/           # Redux store & slices (auth, lead, leadRequest)
-    │   ├── routes/          # AppRoutes & ProtectedRoute
-    │   └── styles/          # Global CSS tokens & custom utilities
-    └── vercel.json          # Vercel SPA rewrite configuration
+    │   ├── api/
+    │   ├── components/
+    │   ├── pages/
+    │   ├── redux/
+    │   ├── routes/
+    │   └── styles/
+    └── vercel.json
 ```
 
----
+## Main API Functionality
 
-## 💻 Local Setup & Installation
+The backend provides APIs for:
 
-### Prerequisites
-- Node.js (v18+)
-- MongoDB instance (local or MongoDB Atlas connection string)
+- Registration and login
+- Logout and session authentication
+- Public lead creation
+- Lead listing and details
+- Pagination and filtering
+- Lead status updates
+- Lead assignment
+- Notes and activity
+- Lead requests
+- Admin approval/rejection
+- User/account management
 
-### 1. Clone & Setup Backend
+The route files inside `Backend/src/routes/` contain the exact API endpoints.
+
+## Local Setup
+
+### Backend
+
 ```bash
 cd Backend
 npm install
 ```
 
-Create `.env` file in `Backend/`:
+Create `Backend/.env`:
+
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/leadflow
-JWT_SECRET=your_super_secret_jwt_key
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret
 JWT_EXPIRY=7d
 CLIENT_URL=http://localhost:5173
 NODE_ENV=development
 ```
 
-Run backend dev server:
+Run:
+
 ```bash
 npm run dev
 ```
 
-Run backend tests:
-```bash
-npm test
-```
+### Frontend
 
-### 2. Setup Frontend
 ```bash
-cd ../Frontend
+cd Frontend
 npm install
 ```
 
-Create `.env` file in `Frontend/`:
+Create `Frontend/.env`:
+
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-Run frontend dev server:
+Run:
+
 ```bash
 npm run dev
 ```
 
+## Testing
+
+Backend tests use Jest and Supertest.
+
+```bash
+cd Backend
+npm test
+```
+
+Current result:
+
+```text
+24 / 24 tests passing
+```
+
+The application was also manually tested for registration, login, Admin/Member permissions, lead creation, lead requests, assignment, status updates, notes, activity, logout, protected routes, and production deployment.
+
+## Design
+
+The frontend uses a clean, modern light theme inspired by the Digital Heroes visual style.
+
+The interface uses Inter typography, warm cream backgrounds, white surfaces, dark green text, muted green accents, responsive layouts, and lightweight micro-animations.
+
+The goal was to keep the dashboard clean and practical for regular use rather than making it visually heavy.
+
+## Deployment
+
+**Frontend:**  
+https://lead-flow-snowy-two.vercel.app/
+
+**Backend:**  
+https://leadflow-7wvj.onrender.com
+
+Production secrets and database credentials are stored as environment variables and are not included in the repository.
+
 ---
 
-## 🌐 Production Deployment
-
-- **Backend (Render / Railway)**:
-  - Environment variable: `CLIENT_URL=https://lead-flow-snowy-two.vercel.app`
-- **Frontend (Vercel)**:
-  - Environment variable: `VITE_API_URL=https://leadflow-7wvj.onrender.com/api`
-  - Includes `vercel.json` SPA rewrite configuration.
-
----
-
-## 📄 License
-This project is created for **Digital Heroes Training Task**. Built by **Satwaj**.
+Built by **Satwaj** for the **Digital Heroes Training Task**.

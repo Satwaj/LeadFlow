@@ -193,91 +193,71 @@ const PublicLeadFormPage = () => {
               </Link>
             </div>
 
-            {/* Lifecycle Pipeline Indicator */}
-            <div className="mt-14 pt-8 border-t border-[var(--border-default)] grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {[
-                { label: "CAPTURE", desc: "Public Form" },
-                { label: "ASSIGN", desc: "Admin Routing" },
-                { label: "FOLLOW UP", desc: "Member Action" },
-                { label: "CLOSE", desc: "Pipeline Progress" },
-              ].map((step, idx) => (
-                <div key={step.label} className="rounded-xl border border-[var(--border-default)] bg-white/80 p-3.5 text-center sm:text-left shadow-xs">
-                  <span className="text-[10px] font-bold text-[var(--brand)] tracking-wider">0{idx + 1} — {step.label}</span>
-                  <p className="text-xs font-semibold text-[var(--text-primary)] mt-0.5">{step.desc}</p>
-                </div>
-              ))}
+            {/* Animated Lifecycle Pipeline Flow - Handwritten Sticky Note Note-Cards */}
+            <div className="mt-14 pt-8 border-t border-[var(--border-default)]">
+              <div className="flex items-center justify-between mb-6">
+                <p className="text-xs font-black uppercase tracking-widest text-[var(--brand)] flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--brand)] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--brand)]"></span>
+                  </span>
+                  Lifecycle Flow Notes
+                </p>
+                <span className="text-xs font-bold text-[var(--brand)] font-['Caveat',cursive] text-base tracking-wider hidden sm:inline-block">
+                  ✏️ Hand-drawn Pipeline Steps
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
+                {[
+                  { step: "01", label: "CAPTURE", desc: "Public Form", note: "Client submits details via form", rotate: "-rotate-2" },
+                  { step: "02", label: "ASSIGN", desc: "Admin Routing", note: "Smart lead assignment to team", rotate: "rotate-1" },
+                  { step: "03", label: "FOLLOW UP", desc: "Member Action", note: "Direct customer outreach & call", rotate: "-rotate-1" },
+                  { step: "04", label: "CLOSE", desc: "Pipeline Progress", note: "Convert opportunity to deal!", rotate: "rotate-2" },
+                ].map((item, idx) => (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, y: 25, rotate: idx % 2 === 0 ? -4 : 4 }}
+                    animate={{ opacity: 1, y: 0, rotate: idx % 2 === 0 ? -1.5 : 1.5 }}
+                    transition={{ delay: 0.12 * idx, duration: 0.45, ease: "easeOut" }}
+                    whileHover={{ y: -8, rotate: 0, scale: 1.05, transition: { duration: 0.2 } }}
+                    className={`relative p-5 bg-[#fefce8] border border-[#fef08a] rounded-sm shadow-md hover:shadow-2xl transition-all duration-300 ${item.rotate} overflow-hidden font-['Caveat',cursive]`}
+                    style={{
+                      backgroundImage: "radial-gradient(#e5e7eb 1px, transparent 1px)",
+                      backgroundSize: "16px 16px",
+                    }}
+                  >
+                    {/* Washi Tape Accent at Top Center */}
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-5 bg-[#fef9c3]/80 border-t border-b border-[#fde047]/60 rotate-1 shadow-2xs pointer-events-none" />
+
+                    {/* Header Step & Pin Icon */}
+                    <div className="flex items-center justify-between mb-1 mt-1">
+                      <span className="text-2xl font-bold text-[#b45309] font-['Caveat',cursive]">
+                        #{item.step}
+                      </span>
+                      <span className="text-sm opacity-60">📌</span>
+                    </div>
+
+                    <h4 className="text-xl font-bold tracking-wide text-[#78350f] uppercase leading-none font-['Caveat',cursive]">
+                      {item.label}
+                    </h4>
+
+                    <p className="text-lg font-bold text-[#92400e] mt-1 leading-snug">
+                      {item.desc}
+                    </p>
+
+                    <div className="mt-3 pt-2 border-t border-dashed border-[#fde047] text-sm text-[#a16207] italic leading-tight">
+                      "{item.note}"
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </motion.div>
         </section>
 
-        {/* SERVICES SECTION */}
-        <section id="services" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 border-t border-[var(--border-default)]">
-          <div className="mb-12">
-            <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand)]">Capabilities</p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
-              What can we build together?
-            </h2>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {servicesList.map(({ number, title, description, icon: Icon }, index) => (
-              <motion.div
-                key={number}
-                custom={index}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-50px" }}
-                variants={cardVariants}
-                className="panel group relative p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg bg-white border border-[var(--border-default)] rounded-[var(--radius-lg)]"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-bold text-[var(--brand)] tracking-wider">{number}</span>
-                  <div className="p-2.5 rounded-full bg-[var(--surface-muted)] group-hover:bg-[var(--brand-soft)] group-hover:text-[var(--brand)] transition">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </div>
-                </div>
-                <h3 className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--brand)] transition flex items-center justify-between">
-                  {title}
-                  <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition text-[var(--brand)]" />
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
-                  {description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* HOW IT WORKS SECTION */}
-        <section id="how-it-works" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 border-t border-[var(--border-default)]">
-          <div className="mb-12">
-            <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand)]">Process</p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
-              From enquiry to opportunity.
-            </h2>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {workflowSteps.map((step, index) => (
-              <motion.div
-                key={step.number}
-                custom={index}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={cardVariants}
-                className="panel p-6 bg-white relative border border-[var(--border-default)] rounded-[var(--radius-lg)] shadow-xs"
-              >
-                <span className="text-3xl font-extrabold text-[var(--brand-secondary)]/40 block mb-2">{step.number}</span>
-                <h3 className="text-base font-bold tracking-wide text-[var(--brand)] uppercase mb-2">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{step.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* START A PROJECT / LEAD FORM */}
-        <section id="start-project" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 border-t border-[var(--border-default)]">
+        {/* START A PROJECT / LEAD FORM (PROMINENT AT TOP) */}
+        <section id="start-project" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 border-t border-[var(--border-default)]">
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <div>
               <span className="inline-block rounded-full bg-[var(--brand-soft)] px-3.5 py-1 text-xs font-bold text-[var(--brand)] uppercase tracking-wider mb-4 shadow-xs">
@@ -411,6 +391,124 @@ const PublicLeadFormPage = () => {
                 </div>
               </form>
             </motion.div>
+          </div>
+        </section>
+
+        {/* SERVICES SECTION - SUBTLE HANDWRITTEN CARD DESIGN */}
+        <section id="services" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 border-t border-[var(--border-default)]">
+          <div className="mb-12">
+            <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand)] flex items-center gap-2">
+              <span className="text-sm">📝</span>
+              Capabilities & Services
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
+              What can we build together?
+            </h2>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {servicesList.map(({ number, title, description, icon: Icon }, index) => (
+              <motion.div
+                key={number}
+                custom={index}
+                initial={{ opacity: 0, y: 20, rotate: index % 2 === 0 ? -1 : 1 }}
+                whileInView={{ opacity: 1, y: 0, rotate: index % 2 === 0 ? -0.5 : 0.5 }}
+                whileHover={{ y: -6, rotate: 0, scale: 1.02 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.35, delay: index * 0.08 }}
+                className="group relative p-6 bg-[#fafafa] hover:bg-[#fffdf5] border border-[var(--border-default)] hover:border-[#fde047] rounded-md shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
+              >
+                {/* Subtle Washi Tape Clip on Top Right */}
+                <div className="absolute -top-2 right-6 w-12 h-4 bg-[#fef08a]/70 rotate-2 border-b border-[#fde047]/40 shadow-2xs pointer-events-none" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-bold text-[#b45309] font-['Caveat',cursive]">
+                      Note #{number}
+                    </span>
+                    <div className="p-2.5 rounded-lg bg-white border border-[var(--border-default)] group-hover:border-[#fde047] group-hover:bg-[#fefce8] transition-colors shadow-2xs">
+                      <Icon className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
+                    </div>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-[var(--text-primary)] group-hover:text-[#78350f] transition-colors flex items-center justify-between font-['Caveat',cursive] text-2xl">
+                    {title}
+                    <ArrowUpRight className="h-4 w-4 text-[var(--text-secondary)] group-hover:text-[#b45309] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)] group-hover:text-[#854d0e] transition-colors">
+                    {description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* HOW IT WORKS SECTION - HANDWRITTEN NOTEBOOK CARDS */}
+        <section id="how-it-works" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 border-t border-[var(--border-default)]">
+          <div className="mb-12">
+            <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand)] flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--brand)] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--brand)]"></span>
+              </span>
+              Handwritten Process Notes
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
+              From enquiry to opportunity.
+            </h2>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {workflowSteps.map((step, index) => (
+              <motion.div
+                key={step.number}
+                custom={index}
+                initial={{ opacity: 0, y: 30, rotate: index % 2 === 0 ? -3 : 3 }}
+                whileInView={{ opacity: 1, y: 0, rotate: index % 2 === 0 ? -1 : 1 }}
+                viewport={{ once: true, margin: "-30px" }}
+                whileHover={{ y: -10, rotate: 0, scale: 1.04, transition: { duration: 0.25 } }}
+                transition={{ delay: index * 0.1, duration: 0.45, ease: "easeOut" }}
+                className="relative p-6 bg-[#fffbeb] border border-[#fef08a] rounded-sm shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden font-['Caveat',cursive]"
+                style={{
+                  backgroundImage: "linear-gradient(#fef9c3 1px, transparent 1px)",
+                  backgroundSize: "100% 24px",
+                }}
+              >
+                {/* Washi tape at top left corner */}
+                <div className="absolute -top-3 left-4 w-14 h-6 bg-[#fde047]/60 -rotate-6 shadow-2xs pointer-events-none" />
+
+                {/* Corner Push Pin */}
+                <div className="absolute top-2 right-3 text-lg opacity-70">
+                  📍
+                </div>
+
+                <div className="relative z-10 pt-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl font-bold text-[#b45309] font-['Caveat',cursive]">
+                      Step #{step.number}
+                    </span>
+                    <span className="text-xs font-semibold text-[#92400e] bg-[#fef08a] px-2 py-0.5 rounded-full border border-[#fde047]">
+                      Note 0{index + 1}
+                    </span>
+                  </div>
+
+                  <h3 className="text-2xl font-bold tracking-wide text-[#78350f] uppercase mb-2 font-['Caveat',cursive]">
+                    {step.title}
+                  </h3>
+
+                  <p className="text-lg leading-relaxed text-[#854d0e]">
+                    {step.description}
+                  </p>
+
+                  <div className="mt-4 pt-2 border-t border-dashed border-[#fde047] flex items-center justify-between text-xs text-[#a16207]">
+                    <span>Phase 0{index + 1}</span>
+                    <span className="font-bold">✓ Approved</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </section>
 
